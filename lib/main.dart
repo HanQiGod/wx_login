@@ -2,8 +2,10 @@ import 'package:fluwx/fluwx.dart' as fluwx;
 import 'package:flutter/material.dart';
 
 // 传入真实的微信 AppID / Universal Link，避免硬编码。
-const String _wxAppId =
-    String.fromEnvironment('WX_APP_ID', defaultValue: 'wx_replace_with_appid');
+const String _wxAppId = String.fromEnvironment(
+  'WX_APP_ID',
+  defaultValue: 'wx_replace_with_appid',
+);
 const String _wxUniversalLink = String.fromEnvironment(
   'WX_UNIVERSAL_LINK',
   defaultValue: 'https://your.universal.link/path/', // 仅 iOS 需要，可留空。
@@ -74,6 +76,7 @@ class _WeChatLoginPageState extends State<WeChatLoginPage> {
     try {
       final ok = await _fluwx.registerApi(
         appId: _wxAppId,
+        doOnIOS: _wxUniversalLink.isNotEmpty,
         universalLink: _wxUniversalLink.isEmpty ? null : _wxUniversalLink,
       );
       setState(() => _status = ok ? 'SDK 注册成功' : 'SDK 注册失败');
@@ -110,8 +113,7 @@ class _WeChatLoginPageState extends State<WeChatLoginPage> {
           children: [
             Text('当前状态：$_status'),
             const SizedBox(height: 12),
-            if (_lastCode != null)
-              SelectableText('最近一次授权 code：$_lastCode'),
+            if (_lastCode != null) SelectableText('最近一次授权 code：$_lastCode'),
             const Spacer(),
             FilledButton.icon(
               onPressed: _initWeChat,
